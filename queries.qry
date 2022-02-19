@@ -1,0 +1,23 @@
+/**
+ * Queries
+ */
+
+query Q1 {
+	description: "Query 1: Select all Members from Member Registry"
+	statement: SELECT org.ctb.network.Member
+}
+
+query Q2 {
+	description: "Query 2: Select all Events from Event Registry."
+	statement: SELECT org.ctb.network.TicketedEvent
+}
+
+query Q3 {
+	description: "Query 3: Select all Tickets from the Ticket Registry."
+	statement: SELECT org.ctb.network.Ticket
+}
+
+query Q4 {
+	description: "Query 4: Select all Ticket Listings from the Ticket Listing Registry."
+	statement: SELECT org.ctb.network.TicketListing
+}

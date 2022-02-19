@@ -1,0 +1,61 @@
+/*
+ * Rules
+ */
+
+rule SystemACL {
+    description: "System ACL to permit all access"
+	participant: "org.hyperledger.composer.system.Participant"
+	operation: ALL
+	resource: "org.hyperledger.composer.system.**"
+	action: ALLOW
+}
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule ReadEvents {
+    description: "Rule 1: The Event Host can see all their events"
+    participant: "org.ctb.network.EventHost"
+    operation: ALL
+    resource: "org.ctb.network.TicketedEvent"
+    action: ALLOW  
+}
+
+rule ReadTickets {
+    description: "Rule 2: The Members can see only the tickets they have purchased."
+    participant: "org.ctb.network.Member"
+    operation: READ
+    resource: "org.ctb.network.*"
+    action: ALLOW  
+}
+
+rule TicketListing {
+    description: "Rule 3: The Ticket Listing is available to all."
+    participant(p): "org.ctb.network.Member"
+    operation: ALL
+    resource(r): "org.ctb.network.Ticket"
+    condition: (r.owner.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+rule Events {
+    description: "Rule 4: The Events are available to all."
+    participant(p): "org.ctb.network.Member"
+    operation: ALL
+    resource(r): "org.ctb.network.TicketListing"
+  	condition: (r.ticket.owner.getIdentifier() == p.getIdentifier())
+    action: ALLOW  
+}

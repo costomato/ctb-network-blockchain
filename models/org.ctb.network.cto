@@ -1,0 +1,94 @@
+/*
+ * Concert ticket booking models
+ */
+
+namespace org.ctb.network
+
+// Participants
+
+abstract participant User {
+  o String firstName
+  o String lastName optional
+  o String emailId optional
+  o String govtIssuedId
+}
+
+participant Member identified by memberId extends User {
+  o String memberId
+}
+
+participant EventHost identified by memberId extends User {
+  o String memberId
+}
+
+
+// Assets
+
+enum EventType {
+  o RESERVED
+  o OPEN_SEATING
+}
+asset TicketedEvent identified by eventId {
+  o String eventId
+  o String date
+  o String description optional
+  o String venue
+  o EventType eventType
+  o Integer ticketQuantity
+  o Double marketPrice
+  --> EventHost eventHost
+}
+
+asset TicketListing identified by tktListingId {
+  o String tktListingId
+  o String state
+  o Double listingPrice
+  --> Ticket ticket
+}
+
+enum TicketState {
+  o UNSOLD
+  o SALE
+  o RESALE
+  o USED
+}
+asset Ticket identified by ticketId {
+  o String ticketId
+  o String seatId
+  o TicketState ticketState
+  o Double faceValue
+  o Double salePrice optional
+  --> TicketedEvent event
+  --> Member owner
+  --> Member lastOwner
+}
+
+
+// Transactions
+
+transaction CreateEvent {
+  o String eventId
+  o String date
+  o String description optional
+  o String venue
+  o EventType eventType
+  o Integer ticketQuantity
+  o Double faceValue
+  --> EventHost host
+}
+
+transaction SellTicket {
+  o Double salePrice
+  --> Member buyer
+  --> Ticket ticket
+}
+
+transaction ResellTicket{
+  o Double salePrice
+  --> Member buyer
+  --> TicketListing listing
+}
+
+transaction UseTicket {
+  --> Ticket ticket
+}
